@@ -1,7 +1,7 @@
 const YOUR_HOST = 'zelikk.blogspot.com'    // 注意前面没有 https://  后面没有 /
 const PAGE_404_URL = 'https://zelikk.blogspot.com/p/icdyct.html'   // 被屏蔽的path要显示什么结果
 const IMG_BASE_URL = 'https://blogger.googleusercontent.com'    // 页面中图片的base url
-const IMG_PROXY = 'https://img.crazypeace.eu.org/'   // 注意末尾有斜杠 /
+const IMG_PROXY = 'https://img.one.eu.org/'   // 注意末尾有斜杠 /
 // KV_BLOCKLIST 中保存被屏蔽的path
 
 export default {
