@@ -31,11 +31,11 @@ async function handleRequest(request, env, ctx) {
   }
   
   // 创建一个新的请求，并设置相同的请求方法和头信息
-  const newRequest = new Request(newUrl, {
+  const newRequest = new Request(newUrl, {    
+    // redirect: 'manual', // 避免中间的重定向
     method: request.method,
     headers: request.headers,
-    body: request.body,
-    redirect: 'manual' // 避免中间的重定向
+    body: request.body
   });
 
   // 获取原始响应
