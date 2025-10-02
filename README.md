@@ -69,3 +69,10 @@
 name `KV_BLOCKLIST` (不要改动)  
 value `bloghtml_blocklist` (就是前面步骤中建立的KV名字)  
 <img width="833" height="673" alt="2025-10-02_01-39-33" src="https://github.com/user-attachments/assets/cc9a0381-cb8b-43ab-9b88-20b0ed5ad576" />
+
+# 根据关键字屏蔽path
+修改`bloghtml` worker的代码  
+数组 `BLOCK_KEYWORDS` 中添加你想屏蔽的path关键字.
+<img width="1179" height="292" alt="image" src="https://github.com/user-attachments/assets/7ba5c228-c185-4d5c-9e84-158dac1fad9f" />  
+
+我只根据关键字屏蔽path, 没有在html内容全文查找.  
