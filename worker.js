@@ -4,6 +4,9 @@ const IMG_BASE_URL = 'https://blogger.googleusercontent.com'    // 页面中图�
 const IMG_PROXY = 'https://img.one.eu.org/'   // 注意末尾有斜杠 /
 // KV_BLOCKLIST 中保存被屏蔽的path
 
+// 要屏蔽的path关键字列表
+const BLOCK_KEYWORDS = ['v2ray', 'xray', 'vmess', 'vless'];
+
 export default {
   async fetch(request, env, ctx) {
     try {
@@ -17,17 +20,19 @@ export default {
 async function handleRequest(request, env, ctx) {
   const url = new URL(request.url);
   let newUrl = '';
-  
-  // 根据 URL 的 pathname 作为 key 去查询 KV 存储
-  const value = await env.KV_BLOCKLIST.get(url.pathname);
-  
-  // 如果查到 value 是 "block"，则返回一个固定页面
-  if (value === 'block') {
-    newUrl = PAGE_404_URL
-  }
-  else {
-    // 如果查不到记录, 或者查到的记录不是"block", 则正常重定向到指定目标
-    newUrl = 'https://' + YOUR_HOST + url.pathname + url.search;
+
+  // 1. 检查关键字拦截（如果命中，直接使用 PAGE_404_URL，跳过 KV 查询）
+  const lowerPath = url.pathname.toLowerCase();
+  if (BLOCK_KEYWORDS.some(keyword => lowerPath.includes(keyword))) {
+    newUrl = PAGE_404_URL;
+  } else {
+    // 2. 没命中关键字 → 查询 KV
+    const value = await env.KV_BLOCKLIST.get(url.pathname);
+    if (value === 'block') {
+      newUrl = PAGE_404_URL;
+    } else {
+      newUrl = 'https://' + YOUR_HOST + url.pathname + url.search;
+    }
   }
   
   // 创建一个新的请求，并设置相同的请求方法和头信息
