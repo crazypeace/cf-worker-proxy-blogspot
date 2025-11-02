@@ -48,7 +48,11 @@ async function handleRequest(request, env, ctx) {
   
   // 检查响应类型，只处理 HTML 内容
   const contentType = response.headers.get('Content-Type');
-  if (contentType && contentType.includes('text/html')) {
+  // if (contentType && contentType.includes('text/html')) {
+  // 同时处理 HTML 和 XML
+  if (contentType && (contentType.includes('text/html') || 
+                            contentType.includes('xml') || 
+                            contentType.includes('rss'))) {
     // 获取响应体内容
     let body = await response.text();
     
