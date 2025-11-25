@@ -20,17 +20,32 @@ export default {
 async function handleRequest(request, env, ctx) {
   const url = new URL(request.url);
   let newUrl = '';
-
+  
+  // 检测是否有 KV 支持
+  const hasKV = env && env.KV_BLOCKLIST;
+  
   // 1. 检查关键字拦截（如果命中，直接使用 PAGE_404_URL，跳过 KV 查询）
   const lowerPath = url.pathname.toLowerCase();
   if (BLOCK_KEYWORDS.some(keyword => lowerPath.includes(keyword))) {
     newUrl = PAGE_404_URL;
   } else {
     // 2. 没命中关键字 → 查询 KV
-    const value = await env.KV_BLOCKLIST.get(url.pathname);
-    if (value === 'block') {
-      newUrl = PAGE_404_URL;
+    // 如果有 KV 支持，查询 KV；否则跳过
+    if (hasKV) {
+      try {
+        const value = await env.KV_BLOCKLIST.get(url.pathname);
+        if (value === 'block') {
+          newUrl = PAGE_404_URL;
+        } else {
+          newUrl = 'https://' + YOUR_HOST + url.pathname + url.search;
+        }
+      } catch (err) {
+        // KV 查询失败，回退到正常 URL
+        console.error('KV query failed:', err);
+        newUrl = 'https://' + YOUR_HOST + url.pathname + url.search;
+      }
     } else {
+      // Snippet 环境：没有 KV，直接使用正常 URL
       newUrl = 'https://' + YOUR_HOST + url.pathname + url.search;
     }
   }
